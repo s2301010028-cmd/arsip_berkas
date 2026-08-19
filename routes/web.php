@@ -13,6 +13,70 @@ use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
+| SPLASH SCREEN
+|--------------------------------------------------------------------------
+|
+| Halaman pertama ketika membuka website.
+| Setelah 3 detik, splash.blade.php akan mengarahkan ke route login.
+|
+*/
+
+Route::get('/', function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kalau user SUDAH login
+    |--------------------------------------------------------------------------
+    |
+    | Tidak perlu splash lagi.
+    | Langsung ke Dashboard.
+    |
+    */
+
+    if (auth()->check()) {
+
+        return redirect()->route('dashboard');
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Kalau belum login
+    |--------------------------------------------------------------------------
+    */
+
+    return view('splash');
+
+})->name('home');
+
+
+/*
+|--------------------------------------------------------------------------
+| SPLASH OPTIONAL ROUTE
+|--------------------------------------------------------------------------
+|
+| Bisa juga dibuka langsung:
+|
+| /splash
+|
+*/
+
+Route::get('/splash', function () {
+
+    if (auth()->check()) {
+
+        return redirect()->route('dashboard');
+
+    }
+
+    return view('splash');
+
+})->name('splash');
+
+
+/*
+|--------------------------------------------------------------------------
 | AUTH / LOGIN
 |--------------------------------------------------------------------------
 */
@@ -20,8 +84,10 @@ use App\Http\Controllers\ProfileController;
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
+
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.process');
+
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
@@ -35,14 +101,18 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::middleware('auth')->group(function () {
 
+
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD
     |--------------------------------------------------------------------------
+    |
+    | PERHATIAN:
+    |
+    | Route "/" tidak lagi berada di sini.
+    | "/" sekarang digunakan untuk Splash Screen.
+    |
     */
-
-    Route::get('/', [DashboardController::class, 'index'])
-        ->name('home');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -55,6 +125,7 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::controller(NoticeController::class)->group(function () {
+
 
         /*
         |----------------------------------------------------------------------
@@ -139,6 +210,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ArsipController::class)->group(function () {
 
+
         /*
         |----------------------------------------------------------------------
         | HALAMAN ARSIP
@@ -153,17 +225,6 @@ Route::middleware('auth')->group(function () {
         |----------------------------------------------------------------------
         | RANGKUMAN ARSIP BULANAN
         |----------------------------------------------------------------------
-        |
-        | Digunakan ketika tombol:
-        |
-        | "Lihat Rangkuman"
-        |
-        | ditekan pada bagian Arsip Bulanan.
-        |
-        | Contoh:
-        |
-        | /arsip/bulanan/2026/8
-        |
         */
 
         Route::get(
@@ -179,18 +240,6 @@ Route::middleware('auth')->group(function () {
         |----------------------------------------------------------------------
         | DOWNLOAD EXCEL ARSIP BULANAN
         |----------------------------------------------------------------------
-        |
-        | Digunakan oleh tombol Download pada masing-masing
-        | kartu Arsip Bulanan.
-        |
-        | Method:
-        |
-        | ArsipController::exportBulanan()
-        |
-        | Contoh:
-        |
-        | /arsip/bulanan/2026/8/download
-        |
         */
 
         Route::get(
@@ -211,6 +260,7 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::controller(LaporanController::class)->group(function () {
+
 
         /*
         |----------------------------------------------------------------------
@@ -236,13 +286,6 @@ Route::middleware('auth')->group(function () {
         |----------------------------------------------------------------------
         | DOWNLOAD PDF PER BULAN
         |----------------------------------------------------------------------
-        |
-        | Contoh:
-        |
-        | /laporan/pdf/1
-        | /laporan/pdf/2
-        | /laporan/pdf/3
-        |
         */
 
         Route::get('/laporan/pdf/{bulan}', 'downloadPdf')
@@ -256,10 +299,6 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     | MANAJEMEN USER
     |--------------------------------------------------------------------------
-    |
-    | Hanya user dengan middleware "admin" yang dapat
-    | mengakses halaman manajemen user.
-    |
     */
 
     Route::middleware('admin')->group(function () {

@@ -1,4 +1,4 @@
-<nav class="top-navbar">
+<nav class="top-navbar" id="topNavbar">
 
     {{-- =====================================================
         NAVBAR LEFT
@@ -68,6 +68,7 @@
 
             <ul
                 class="dropdown-menu dropdown-menu-end navbar-dropdown notification-dropdown">
+
 
                 {{-- HEADER NOTIFIKASI --}}
 
@@ -449,7 +450,7 @@
 <style>
 
 /* =====================================================
-   UKURAN SIDEBAR
+   VARIABLE
 ===================================================== */
 
 :root {
@@ -462,7 +463,6 @@
 
 /* =====================================================
    TOP NAVBAR
-   PERBAIKAN AGAR TIDAK TERPOTONG
 ===================================================== */
 
 .top-navbar {
@@ -471,11 +471,33 @@
 
     top: 0;
 
+    /*
+    |--------------------------------------------------------------------------
+    | SIDEBAR TERBUKA
+    |--------------------------------------------------------------------------
+    */
+
     left: var(--sidebar-width);
 
     right: 0;
 
-    width: auto;
+    /*
+    |--------------------------------------------------------------------------
+    | PENTING
+    |--------------------------------------------------------------------------
+    |
+    | TIDAK menggunakan:
+    |
+    | width: calc(...)
+    | max-width: calc(...)
+    |
+    | Karena cukup menggunakan LEFT + RIGHT.
+    |
+    */
+
+    width: auto !important;
+
+    max-width: none !important;
 
     height: var(--navbar-height);
 
@@ -503,19 +525,78 @@
 
     z-index: 1100;
 
-    /*
-    |--------------------------------------------------------------------------
-    | PENTING
-    |--------------------------------------------------------------------------
-    | Jangan memakai width:100% di navbar karena navbar sudah dimulai
-    | setelah sidebar. Kalau width:100% dipakai, navbar akan melewati
-    | sisi kanan layar.
-    */
+    transition:
+        left .28s ease,
+        width .28s ease,
+        padding .28s ease;
 
-    max-width:
-        calc(
-            100vw - var(--sidebar-width)
-        );
+}
+
+
+/* =====================================================
+   SIDEBAR CLOSED
+===================================================== */
+
+/*
+|--------------------------------------------------------------------------
+| Saat sidebar ditutup oleh JavaScript di bawah,
+| body mendapatkan class:
+|
+| sidebar-closed
+|
+| Navbar otomatis dari kiri layar sampai kanan layar.
+|--------------------------------------------------------------------------
+*/
+
+body.sidebar-closed
+.top-navbar {
+
+    left: 0 !important;
+
+    right: 0 !important;
+
+    width: auto !important;
+
+    max-width: none !important;
+
+}
+
+
+/* =====================================================
+   SUPPORT CLASS SIDEBAR LAIN
+===================================================== */
+
+/*
+|--------------------------------------------------------------------------
+| Kalau CSS/JS lama project memakai class collapsed,
+| aturan ini tetap membuat navbar penuh.
+|--------------------------------------------------------------------------
+*/
+
+body.sidebar-collapsed
+.top-navbar {
+
+    left: 0 !important;
+
+    right: 0 !important;
+
+    width: auto !important;
+
+    max-width: none !important;
+
+}
+
+
+body.sidebar-hidden
+.top-navbar {
+
+    left: 0 !important;
+
+    right: 0 !important;
+
+    width: auto !important;
+
+    max-width: none !important;
 
 }
 
@@ -578,7 +659,8 @@
     transition:
         background .2s ease,
         color .2s ease,
-        border-color .2s ease;
+        border-color .2s ease,
+        transform .2s ease;
 
 }
 
@@ -590,6 +672,13 @@
     border-color: #bfdbfe;
 
     color: #2563eb;
+
+}
+
+
+.menu-toggle:active {
+
+    transform: scale(.96);
 
 }
 
@@ -846,6 +935,10 @@
 }
 
 
+/* =====================================================
+   NOTIFICATION HEADER
+===================================================== */
+
 .notification-header {
 
     display: flex;
@@ -933,7 +1026,8 @@
 
     text-decoration: none;
 
-    transition: background .2s ease;
+    transition:
+        background .2s ease;
 
 }
 
@@ -1075,7 +1169,7 @@
 
 
 /* =====================================================
-   NOTIFICATION EMPTY
+   EMPTY NOTIFICATION
 ===================================================== */
 
 .notification-empty {
@@ -1460,14 +1554,8 @@
 
 
 /* =====================================================
-   PENTING UNTUK MAIN CONTENT
+   MAIN
 ===================================================== */
-
-/*
-|--------------------------------------------------------------------------
-| Karena navbar position fixed, content perlu memiliki ruang di atas.
-|--------------------------------------------------------------------------
-*/
 
 .main {
 
@@ -1483,22 +1571,15 @@
 
 @media(max-width: 991px) {
 
-    :root {
-
-        --sidebar-width: 0px;
-
-    }
-
-
     .top-navbar {
 
-        left: 0;
+        left: 0 !important;
 
-        right: 0;
+        right: 0 !important;
 
-        max-width: 100vw;
+        width: auto !important;
 
-        width: 100%;
+        max-width: none !important;
 
     }
 
@@ -1683,3 +1764,250 @@
 }
 
 </style>
+
+
+<script>
+
+/* ============================================================
+   NAVBAR MENGIKUTI SIDEBAR
+============================================================ */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        const menuToggle =
+            document.getElementById(
+                'menu-toggle'
+            );
+
+        const sidebar =
+            document.getElementById(
+                'sidebar'
+            );
+
+        const navbar =
+            document.getElementById(
+                'topNavbar'
+            );
+
+
+        if (
+            !menuToggle ||
+            !navbar
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS SIDEBAR
+        |--------------------------------------------------------------------------
+        */
+
+        function sidebarSedangTertutup()
+        {
+
+            if (!sidebar) {
+
+                return false;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Support beberapa nama class yang mungkin sudah digunakan
+            | oleh CSS/JS project kamu.
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                sidebar.classList.contains(
+                    'collapsed'
+                )
+                ||
+                sidebar.classList.contains(
+                    'closed'
+                )
+                ||
+                sidebar.classList.contains(
+                    'hide'
+                )
+                ||
+                sidebar.classList.contains(
+                    'hidden'
+                )
+            ) {
+
+                return true;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cek transform sidebar.
+            |--------------------------------------------------------------------------
+            */
+
+            const style =
+                window.getComputedStyle(
+                    sidebar
+                );
+
+
+            if (
+                style.display === 'none'
+            ) {
+
+                return true;
+
+            }
+
+
+            return false;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE NAVBAR
+        |--------------------------------------------------------------------------
+        */
+
+        function updateNavbar()
+        {
+
+            if (
+                sidebarSedangTertutup()
+            ) {
+
+                document.body.classList.add(
+                    'sidebar-closed'
+                );
+
+            } else {
+
+                document.body.classList.remove(
+                    'sidebar-closed'
+                );
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KLIK TOGGLE
+        |--------------------------------------------------------------------------
+        |
+        | Kita tunggu sedikit supaya JS sidebar yang sudah ada
+        | selesai mengubah posisi/class sidebar.
+        |--------------------------------------------------------------------------
+        */
+
+        menuToggle.addEventListener(
+            'click',
+            function () {
+
+                /*
+                |--------------------------------------------------------------------------
+                | LANGSUNG TOGGLE UNTUK NAVBAR
+                |--------------------------------------------------------------------------
+                */
+
+                document.body.classList.toggle(
+                    'sidebar-closed'
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Sinkron ulang setelah animasi sidebar.
+                |--------------------------------------------------------------------------
+                */
+
+                setTimeout(
+                    function () {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Jika sidebar punya class collapse dari script lama,
+                        | sesuaikan lagi.
+                        |--------------------------------------------------------------------------
+                        */
+
+                        if (sidebar) {
+
+                            const rect =
+                                sidebar.getBoundingClientRect();
+
+
+                            const benarBenarTertutup =
+                                rect.right <= 1;
+
+
+                            if (
+                                benarBenarTertutup
+                            ) {
+
+                                document.body.classList.add(
+                                    'sidebar-closed'
+                                );
+
+                            }
+
+                        }
+
+                    },
+                    320
+                );
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MONITOR PERUBAHAN CLASS SIDEBAR
+        |--------------------------------------------------------------------------
+        */
+
+        if (sidebar) {
+
+            const observer =
+                new MutationObserver(
+                    function () {
+
+                        setTimeout(
+                            updateNavbar,
+                            10
+                        );
+
+                    }
+                );
+
+
+            observer.observe(
+                sidebar,
+                {
+                    attributes: true,
+                    attributeFilter: [
+                        'class',
+                        'style'
+                    ]
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
