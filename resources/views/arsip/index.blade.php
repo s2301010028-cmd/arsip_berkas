@@ -392,26 +392,6 @@
             </div>
 
 
-            {{-- BUTTON --}}
-
-            <div class="arsip-filter-button">
-
-                <button
-                    type="button"
-                    class="arsip-search-button"
-                    onclick="tampilkanArsip()">
-
-                    <span class="search-button-icon">
-                        <i class="bi bi-search"></i>
-                    </span>
-
-                    <span>
-                        Tampilkan Arsip
-                    </span>
-
-                </button>
-
-            </div>
 
         </div>
 
@@ -1995,7 +1975,7 @@
     display: grid;
 
     grid-template-columns:
-        1fr 1fr auto;
+        repeat(2, minmax(0, 1fr));
 
     gap: 14px;
 
@@ -4016,6 +3996,37 @@ function escapeArsip(value)
 
 }
 
+</script>
+
+
+
+{{-- =====================================================
+    FILTER OTOMATIS TANPA TOMBOL TAMPILKAN ARSIP
+====================================================== --}}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const filterTanggal = document.getElementById('filterTanggal');
+    const filterLokasi = document.getElementById('filterLokasi');
+
+    function jalankanFilterArsip() {
+
+        if (typeof window.tampilkanArsip === 'function') {
+            window.tampilkanArsip();
+        }
+
+    }
+
+    if (filterTanggal) {
+        filterTanggal.addEventListener('change', jalankanFilterArsip);
+    }
+
+    if (filterLokasi) {
+        filterLokasi.addEventListener('change', jalankanFilterArsip);
+    }
+
+});
 </script>
 
 @endsection
