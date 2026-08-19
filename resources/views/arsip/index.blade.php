@@ -309,6 +309,104 @@
 
         </div>
 
+        {{-- =================================================
+            PENCARIAN DAFTAR ARSIP
+            Tambahan saja - tidak mengubah fungsi lama
+        ================================================== --}}
+
+        <div class="arsip-list-search" id="arsipListSearch">
+
+            <div class="arsip-list-search-field">
+
+                <label for="searchArsipTanggal">
+                    <i class="bi bi-calendar3"></i>
+                    Tanggal
+                </label>
+
+                <div class="arsip-list-search-control">
+
+                    <i class="bi bi-calendar-event"></i>
+
+                    <input
+                        type="date"
+                        id="searchArsipTanggal"
+                        autocomplete="off">
+
+                </div>
+
+            </div>
+
+
+            <div class="arsip-list-search-field">
+
+                <label for="searchArsipLokasi">
+                    <i class="bi bi-geo-alt"></i>
+                    Lokasi
+                </label>
+
+                <div class="arsip-list-search-control">
+
+                    <i class="bi bi-pin-map"></i>
+
+                    <select id="searchArsipLokasi">
+
+                        <option value="">
+                            Semua Lokasi
+                        </option>
+
+                        <option value="Sampling 1">Sampling 1</option>
+                        <option value="Sampling 2">Sampling 2</option>
+                        <option value="Sampling 3">Sampling 3</option>
+                        <option value="Sampling 4">Sampling 4</option>
+                        <option value="Sampling 5">Sampling 5</option>
+                        <option value="Sampling 6">Sampling 6</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="Induk">Induk</option>
+                        <option value="DT Gunungsari">DT Gunungsari</option>
+                        <option value="DT Narmada">DT Narmada</option>
+                        <option value="DT Kediri">DT Kediri</option>
+                        <option value="MPP">MPP</option>
+                        <option value="Samtor">Samtor</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="arsip-list-search-actions">
+
+                <button
+                    type="button"
+                    class="arsip-list-search-btn primary"
+                    id="btnSearchDaftarArsip">
+
+                    <i class="bi bi-search"></i>
+
+                    <span id="btnSearchDaftarArsipText">
+                        Cari
+                    </span>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="arsip-list-search-btn reset"
+                    id="btnResetSearchDaftarArsip"
+                    title="Reset pencarian">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </div>
+
         <div
             id="daftarArsipContent"
             class="arsip-collapsible-content is-open">
@@ -3373,6 +3471,664 @@
 
 
 
+
+<style>
+
+/* =====================================================
+   PENCARIAN DAFTAR ARSIP
+   Tambahan - tidak mengubah fungsi lama
+===================================================== */
+
+.arsip-list-search {
+
+    margin:
+        -2px 0 14px;
+
+    padding: 13px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(170px, .75fr)
+        minmax(220px, 1fr)
+        auto;
+
+    gap: 10px;
+
+    align-items: end;
+
+    background: #ffffff;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(15,23,42,.035);
+
+}
+
+
+.arsip-list-search-field {
+
+    min-width: 0;
+
+}
+
+
+.arsip-list-search-field label {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-bottom: 6px;
+
+    color: #475569;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+}
+
+
+.arsip-list-search-field label i {
+
+    color: #64748b;
+
+}
+
+
+.arsip-list-search-control {
+
+    position: relative;
+
+    min-width: 0;
+
+}
+
+
+.arsip-list-search-control > i {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 11px;
+
+    transform:
+        translateY(-50%);
+
+    z-index: 2;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    pointer-events: none;
+
+}
+
+
+.arsip-list-search-control input,
+.arsip-list-search-control select {
+
+    width: 100%;
+
+    min-height: 38px;
+
+    padding:
+        0 10px 0 34px;
+
+    border:
+        1px solid #dbe3ed;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #f8fafc;
+
+    color: #334155;
+
+    font-size: 10px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+
+}
+
+
+.arsip-list-search-control input:focus,
+.arsip-list-search-control select:focus {
+
+    background: #ffffff;
+
+    border-color: #93c5fd;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,235,.08);
+
+}
+
+
+.arsip-list-search-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.arsip-list-search-btn {
+
+    min-height: 38px;
+
+    padding: 0 13px;
+
+    border-radius: 8px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.arsip-list-search-btn.primary {
+
+    min-width: 82px;
+
+    border:
+        1px solid #2563eb;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+}
+
+
+.arsip-list-search-btn.primary:hover {
+
+    background: #1d4ed8;
+
+    border-color: #1d4ed8;
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 6px 14px
+        rgba(37,99,235,.18);
+
+}
+
+
+.arsip-list-search-btn.reset {
+
+    border:
+        1px solid #dbe3ed;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+}
+
+
+.arsip-list-search-btn.reset:hover {
+
+    background: #f8fafc;
+
+    color: #334155;
+
+    border-color: #cbd5e1;
+
+}
+
+
+.arsip-list-search-btn:disabled {
+
+    opacity: .65;
+
+    cursor: wait;
+
+    transform: none !important;
+
+}
+
+
+.arsip-list-search-btn.is-loading i {
+
+    animation:
+        arsipListSearchSpin
+        .7s
+        linear
+        infinite;
+
+}
+
+
+@keyframes arsipListSearchSpin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   LOADING PENCARIAN
+===================================================== */
+
+.arsip-list-search-loading {
+
+    min-height: 185px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 25px;
+
+    text-align: center;
+
+}
+
+
+.arsip-list-search-loading-inner {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+}
+
+
+.arsip-list-search-spinner {
+
+    width: 34px;
+
+    height: 34px;
+
+    border:
+        3px solid #dbeafe;
+
+    border-top-color:
+        #2563eb;
+
+    border-radius: 50%;
+
+    animation:
+        arsipListSearchSpin
+        .7s linear infinite;
+
+}
+
+
+.arsip-list-search-loading h3 {
+
+    margin:
+        10px 0 3px;
+
+    color: #0f172a;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.arsip-list-search-loading p {
+
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: 9px;
+
+}
+
+
+/* =====================================================
+   RESULT HEADER
+===================================================== */
+
+.arsip-search-result-header {
+
+    padding:
+        12px 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-bottom:
+        1px solid #e2e8f0;
+
+    background: #ffffff;
+
+}
+
+
+.arsip-search-result-header span {
+
+    display: block;
+
+    color: #2563eb;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: .7px;
+
+}
+
+
+.arsip-search-result-header h3 {
+
+    margin:
+        2px 0 0;
+
+    color: #0f172a;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+}
+
+
+.arsip-search-result-count {
+
+    padding:
+        6px 9px;
+
+    border-radius: 20px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   RESULT TABLE
+===================================================== */
+
+.arsip-search-table-wrap {
+
+    overflow-x: auto;
+
+}
+
+
+.arsip-search-table {
+
+    width: 100%;
+
+    min-width: 1030px;
+
+    border-collapse: collapse;
+
+}
+
+
+.arsip-search-table th,
+.arsip-search-table td {
+
+    padding:
+        9px 10px;
+
+    border-bottom:
+        1px solid #f1f5f9;
+
+    vertical-align: middle;
+
+    color: #475569;
+
+    font-size: 9px;
+
+}
+
+
+.arsip-search-table th {
+
+    background: #f8fafc;
+
+    color: #64748b;
+
+    font-size: 8px;
+
+    font-weight: 750;
+
+    white-space: nowrap;
+
+}
+
+
+.arsip-search-table tbody tr:hover {
+
+    background: #fafcff;
+
+}
+
+
+.arsip-search-shift {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 45px;
+
+    padding:
+        4px 7px;
+
+    border-radius: 6px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.arsip-search-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding:
+        4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+}
+
+
+.arsip-search-status.sesuai {
+
+    background: #dcfce7;
+
+    color: #15803d;
+
+}
+
+
+.arsip-search-status.pending {
+
+    background: #fef3c7;
+
+    color: #b45309;
+
+}
+
+
+.arsip-search-status.rusak {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+.arsip-search-edit-btn {
+
+    width: 30px;
+
+    height: 30px;
+
+    padding: 0;
+
+    border:
+        1px solid #bfdbfe;
+
+    border-radius: 7px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+
+}
+
+
+.arsip-search-edit-btn:hover {
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =====================================================
+   RESPONSIVE SEARCH
+===================================================== */
+
+@media(max-width: 850px) {
+
+    .arsip-list-search {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+
+    .arsip-list-search-actions {
+
+        grid-column:
+            1 / -1;
+
+    }
+
+}
+
+
+@media(max-width: 600px) {
+
+    .arsip-list-search {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .arsip-list-search-actions {
+
+        grid-column:
+            auto;
+
+    }
+
+
+    .arsip-list-search-btn {
+
+        flex: 1;
+
+    }
+
+}
+
+</style>
+
+
 {{-- =====================================================
     JAVASCRIPT RANGKUMAN DATABASE
 ====================================================== --}}
@@ -3873,6 +4629,1475 @@ function escapeArsip(value)
 
 </script>
 
+
+
+
+{{-- =====================================================
+    PENCARIAN DAFTAR ARSIP BERDASARKAN TANGGAL + LOKASI
+    Tambahan - tidak mengubah fungsi lama
+====================================================== --}}
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        const tanggalInput =
+            document.getElementById(
+                'searchArsipTanggal'
+            );
+
+        const lokasiInput =
+            document.getElementById(
+                'searchArsipLokasi'
+            );
+
+        const searchButton =
+            document.getElementById(
+                'btnSearchDaftarArsip'
+            );
+
+        const resetButton =
+            document.getElementById(
+                'btnResetSearchDaftarArsip'
+            );
+
+        const searchButtonText =
+            document.getElementById(
+                'btnSearchDaftarArsipText'
+            );
+
+        const hasilArsip =
+            document.getElementById(
+                'hasilArsip'
+            );
+
+        const daftarContent =
+            document.getElementById(
+                'daftarArsipContent'
+            );
+
+
+        if (
+            !tanggalInput ||
+            !lokasiInput ||
+            !searchButton ||
+            !resetButton ||
+            !hasilArsip
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan isi awal agar tombol Reset tidak merusak fungsi lama
+        |--------------------------------------------------------------------------
+        */
+
+        const initialHasilHtml =
+            hasilArsip.innerHTML;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | API Notice yang sudah ada di project
+        |--------------------------------------------------------------------------
+        */
+
+        const apiNoticeUrl =
+            @json(route('api.notices'));
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HELPER
+        |--------------------------------------------------------------------------
+        */
+
+        function escapeSearchArsip(value)
+        {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return '';
+
+            }
+
+
+            return String(value)
+
+                .replace(/&/g, '&amp;')
+
+                .replace(/</g, '&lt;')
+
+                .replace(/>/g, '&gt;')
+
+                .replace(/"/g, '&quot;')
+
+                .replace(/'/g, '&#039;');
+
+        }
+
+
+        function formatSearchAngka(value)
+        {
+
+            return Number(
+                value || 0
+            ).toLocaleString(
+                'id-ID'
+            );
+
+        }
+
+
+        function normalisasiSearchTanggal(value)
+        {
+
+            if (!value) {
+
+                return '';
+
+            }
+
+
+            const text =
+                String(value)
+                    .trim();
+
+
+            /*
+            | 2026-08-19 / 2026-08-19T00:00:00 / 2026-08-19 00:00:00
+            */
+
+            let match =
+                text.match(
+                    /^(\d{4})-(\d{2})-(\d{2})/
+                );
+
+
+            if (match) {
+
+                return (
+                    match[1]
+                    +
+                    '-'
+                    +
+                    match[2]
+                    +
+                    '-'
+                    +
+                    match[3]
+                );
+
+            }
+
+
+            /*
+            | 19-08-2026 atau 19/08/2026
+            */
+
+            match =
+                text.match(
+                    /^(\d{2})[-\/](\d{2})[-\/](\d{4})/
+                );
+
+
+            if (match) {
+
+                return (
+                    match[3]
+                    +
+                    '-'
+                    +
+                    match[2]
+                    +
+                    '-'
+                    +
+                    match[1]
+                );
+
+            }
+
+
+            return text;
+
+        }
+
+
+        function formatSearchTanggal(value)
+        {
+
+            const tanggal =
+                normalisasiSearchTanggal(
+                    value
+                );
+
+
+            const match =
+                tanggal.match(
+                    /^(\d{4})-(\d{2})-(\d{2})$/
+                );
+
+
+            if (!match) {
+
+                return value || '-';
+
+            }
+
+
+            return (
+                match[3]
+                +
+                '-'
+                +
+                match[2]
+                +
+                '-'
+                +
+                match[1]
+            );
+
+        }
+
+
+        function formatSearchNomorSeri(value)
+        {
+
+            if (!value) {
+
+                return '-';
+
+            }
+
+
+            const original =
+                String(value);
+
+
+            const angka =
+                original.replace(
+                    /\D/g,
+                    ''
+                );
+
+
+            if (
+                angka.length >= 10
+            ) {
+
+                return (
+                    angka.slice(0,2)
+                    +
+                    '-'
+                    +
+                    angka.slice(2)
+                );
+
+            }
+
+
+            return original;
+
+        }
+
+
+        function searchStatusClass(status)
+        {
+
+            const value =
+                String(
+                    status || ''
+                ).toLowerCase();
+
+
+            if (
+                value === 'sesuai' ||
+                value === 'selesai'
+            ) {
+
+                return 'sesuai';
+
+            }
+
+
+            if (
+                value === 'pending'
+            ) {
+
+                return 'pending';
+
+            }
+
+
+            return 'rusak';
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ubah record database menjadi baris shift Pagi/Sore.
+        |
+        | Mendukung dua bentuk response:
+        | 1. Notice mentah: petugas_pagi, jumlah_pagi, dst.
+        | 2. Data yang sudah per-shift: shift, petugas, jumlah, dst.
+        |--------------------------------------------------------------------------
+        */
+
+        function pecahSearchNotice(data)
+        {
+
+            const rows = [];
+
+
+            data.forEach(
+                function (item) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Sudah berbentuk per shift
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        item.shift !== undefined
+                    ) {
+
+                        rows.push({
+
+                            id:
+                                item.id,
+
+                            tanggal:
+                                item.tanggal
+                                ??
+                                item.tanggal_notice
+                                ??
+                                '',
+
+                            lokasi:
+                                item.lokasi
+                                ??
+                                '',
+
+                            shift:
+                                item.shift
+                                ??
+                                '-',
+
+                            petugas:
+                                item.petugas
+                                ??
+                                '-',
+
+                            awal:
+                                item.awal
+                                ??
+                                item.nomor_seri_awal
+                                ??
+                                '-',
+
+                            akhir:
+                                item.akhir
+                                ??
+                                item.nomor_seri_akhir
+                                ??
+                                '-',
+
+                            jumlah:
+                                Number(
+                                    item.jumlah
+                                    ||
+                                    0
+                                ),
+
+                            status:
+                                item.status
+                                ??
+                                '-',
+
+                            keterangan:
+                                item.keterangan
+                                ??
+                                '-',
+
+                        });
+
+
+                        return;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Data Pagi
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const adaPagi =
+                        item.petugas_pagi
+                        ||
+                        item.awal_pagi
+                        ||
+                        item.akhir_pagi
+                        ||
+                        Number(
+                            item.jumlah_pagi
+                            ||
+                            0
+                        ) > 0;
+
+
+                    if (adaPagi) {
+
+                        rows.push({
+
+                            id:
+                                item.id,
+
+                            tanggal:
+                                item.tanggal
+                                ??
+                                item.tanggal_notice
+                                ??
+                                '',
+
+                            lokasi:
+                                item.lokasi
+                                ??
+                                '',
+
+                            shift:
+                                'Pagi',
+
+                            petugas:
+                                item.petugas_pagi
+                                ??
+                                '-',
+
+                            awal:
+                                item.awal_pagi
+                                ??
+                                '-',
+
+                            akhir:
+                                item.akhir_pagi
+                                ??
+                                '-',
+
+                            jumlah:
+                                Number(
+                                    item.jumlah_pagi
+                                    ||
+                                    0
+                                ),
+
+                            status:
+                                item.status_pagi
+                                ??
+                                '-',
+
+                            keterangan:
+                                item.keterangan_pagi
+                                ??
+                                '-',
+
+                        });
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Data Sore
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const adaSore =
+                        item.petugas_sore
+                        ||
+                        item.awal_sore
+                        ||
+                        item.akhir_sore
+                        ||
+                        Number(
+                            item.jumlah_sore
+                            ||
+                            0
+                        ) > 0;
+
+
+                    if (adaSore) {
+
+                        rows.push({
+
+                            id:
+                                item.id,
+
+                            tanggal:
+                                item.tanggal
+                                ??
+                                item.tanggal_notice
+                                ??
+                                '',
+
+                            lokasi:
+                                item.lokasi
+                                ??
+                                '',
+
+                            shift:
+                                'Sore',
+
+                            petugas:
+                                item.petugas_sore
+                                ??
+                                '-',
+
+                            awal:
+                                item.awal_sore
+                                ??
+                                '-',
+
+                            akhir:
+                                item.akhir_sore
+                                ??
+                                '-',
+
+                            jumlah:
+                                Number(
+                                    item.jumlah_sore
+                                    ||
+                                    0
+                                ),
+
+                            status:
+                                item.status_sore
+                                ??
+                                '-',
+
+                            keterangan:
+                                item.keterangan_sore
+                                ??
+                                '-',
+
+                        });
+
+                    }
+
+                }
+            );
+
+
+            return rows;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan section daftar arsip terbuka
+        |--------------------------------------------------------------------------
+        */
+
+        function bukaSearchDaftarArsip()
+        {
+
+            const button =
+                document.getElementById(
+                    'toggleDaftarArsipBtn'
+                );
+
+            const icon =
+                document.getElementById(
+                    'toggleDaftarArsipIcon'
+                );
+
+            const text =
+                document.getElementById(
+                    'toggleDaftarArsipText'
+                );
+
+
+            if (daftarContent) {
+
+                daftarContent.classList.remove(
+                    'is-closed'
+                );
+
+                daftarContent.classList.add(
+                    'is-open'
+                );
+
+            }
+
+
+            if (button) {
+
+                button.classList.remove(
+                    'is-closed'
+                );
+
+                button.setAttribute(
+                    'aria-expanded',
+                    'true'
+                );
+
+            }
+
+
+            if (icon) {
+
+                icon.className =
+                    'bi bi-chevron-up';
+
+            }
+
+
+            if (text) {
+
+                text.textContent =
+                    'Tutup Daftar Arsip';
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Loading
+        |--------------------------------------------------------------------------
+        */
+
+        function startSearchLoading()
+        {
+
+            bukaSearchDaftarArsip();
+
+
+            searchButton.disabled =
+                true;
+
+
+            searchButton.classList.add(
+                'is-loading'
+            );
+
+
+            searchButton.innerHTML =
+                '<i class="bi bi-arrow-repeat"></i>'
+                +
+                '<span id="btnSearchDaftarArsipText">Mencari...</span>';
+
+
+            hasilArsip.innerHTML = `
+
+                <div class="arsip-list-search-loading">
+
+                    <div class="arsip-list-search-loading-inner">
+
+                        <div class="arsip-list-search-spinner"></div>
+
+                        <h3>
+                            Mencari Data Arsip
+                        </h3>
+
+                        <p>
+                            Data sedang dicocokkan berdasarkan tanggal dan lokasi.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        function stopSearchLoading()
+        {
+
+            searchButton.disabled =
+                false;
+
+
+            searchButton.classList.remove(
+                'is-loading'
+            );
+
+
+            searchButton.innerHTML =
+                '<i class="bi bi-search"></i>'
+                +
+                '<span id="btnSearchDaftarArsipText">Cari</span>';
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Render hasil
+        |--------------------------------------------------------------------------
+        */
+
+        function renderSearchResult(rows)
+        {
+
+            if (
+                !rows ||
+                rows.length === 0
+            ) {
+
+                hasilArsip.innerHTML = `
+
+                    <div class="hasil-placeholder">
+
+                        <div class="placeholder-ring">
+
+                            <div class="placeholder-icon">
+
+                                <i class="bi bi-search"></i>
+
+                            </div>
+
+                        </div>
+
+                        <span class="placeholder-eyebrow">
+                            HASIL PENCARIAN
+                        </span>
+
+                        <h3>
+                            Data Tidak Ditemukan
+                        </h3>
+
+                        <p>
+                            Tidak ada arsip yang sesuai dengan tanggal
+                            dan lokasi yang dipilih.
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                return;
+
+            }
+
+
+            let totalNotice = 0;
+
+            let body = '';
+
+
+            rows.forEach(
+                function (item,index) {
+
+                    totalNotice +=
+                        Number(
+                            item.jumlah
+                            ||
+                            0
+                        );
+
+
+                    const statusClass =
+                        searchStatusClass(
+                            item.status
+                        );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ID asli database.
+                    | Tidak membuat 3_1 / 3_2 sehingga tombol Edit tetap benar.
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const noticeId =
+                        String(
+                            item.id
+                            ??
+                            ''
+                        )
+                        .match(
+                            /^\d+/
+                        );
+
+
+                    const id =
+                        noticeId
+                            ? noticeId[0]
+                            : '';
+
+
+                    body += `
+
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                ${escapeSearchArsip(
+                                    formatSearchTanggal(
+                                        item.tanggal
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ${escapeSearchArsip(
+                                        item.lokasi
+                                        ||
+                                        '-'
+                                    )}
+                                </strong>
+                            </td>
+
+                            <td>
+                                <span class="arsip-search-shift">
+                                    ${escapeSearchArsip(
+                                        item.shift
+                                        ||
+                                        '-'
+                                    )}
+                                </span>
+                            </td>
+
+                            <td>
+                                ${escapeSearchArsip(
+                                    item.petugas
+                                    ||
+                                    '-'
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeSearchArsip(
+                                    formatSearchNomorSeri(
+                                        item.awal
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeSearchArsip(
+                                    formatSearchNomorSeri(
+                                        item.akhir
+                                    )
+                                )}
+                            </td>
+
+                            <td style="
+                                text-align:center;
+                                font-weight:700;
+                            ">
+                                ${formatSearchAngka(
+                                    item.jumlah
+                                )}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="
+                                        arsip-search-status
+                                        ${statusClass}
+                                    ">
+
+                                    ${escapeSearchArsip(
+                                        item.status
+                                        ||
+                                        '-'
+                                    )}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+                                ${escapeSearchArsip(
+                                    item.keterangan
+                                    ||
+                                    '-'
+                                )}
+                            </td>
+
+                            <td style="white-space:nowrap;">
+
+                                ${
+                                    id
+                                        ? `
+                                            <a
+                                                href="{{ url('/notice') }}/${id}/edit"
+                                                class="arsip-search-edit-btn"
+                                                title="Edit Notice">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                            </a>
+                                        `
+                                        : '-'
+                                }
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            );
+
+
+            hasilArsip.innerHTML = `
+
+                <div class="arsip-search-result-header">
+
+                    <div>
+
+                        <span>
+                            HASIL PENCARIAN
+                        </span>
+
+                        <h3>
+                            ${rows.length} Arsip Ditemukan
+                        </h3>
+
+                    </div>
+
+
+                    <div class="arsip-search-result-count">
+
+                        Total Notice:
+                        ${formatSearchAngka(
+                            totalNotice
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="arsip-search-table-wrap">
+
+                    <table class="arsip-search-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>No.</th>
+                                <th>Tanggal</th>
+                                <th>Lokasi</th>
+                                <th>Shift</th>
+                                <th>Petugas</th>
+                                <th>No. Seri Awal</th>
+                                <th>No. Seri Akhir</th>
+                                <th>Jumlah</th>
+                                <th>Status</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            ${body}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CARI DATABASE
+        |--------------------------------------------------------------------------
+        */
+
+        async function cariDaftarArsip()
+        {
+
+            const tanggal =
+                tanggalInput.value;
+
+
+            const lokasi =
+                String(
+                    lokasiInput.value
+                    ||
+                    ''
+                )
+                .trim();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Minimal salah satu filter harus dipilih
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                !tanggal &&
+                !lokasi
+            ) {
+
+                alert(
+                    'Pilih tanggal atau lokasi terlebih dahulu.'
+                );
+
+
+                tanggalInput.focus();
+
+
+                return;
+
+            }
+
+
+            startSearchLoading();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Beri browser kesempatan merender loading
+            |--------------------------------------------------------------------------
+            */
+
+            await new Promise(
+                function (resolve) {
+
+                    requestAnimationFrame(
+                        function () {
+
+                            requestAnimationFrame(
+                                resolve
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            const mulai =
+                Date.now();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        apiNoticeUrl,
+                        {
+
+                            method:
+                                'GET',
+
+                            headers: {
+
+                                'Accept':
+                                    'application/json',
+
+                                'X-Requested-With':
+                                    'XMLHttpRequest',
+
+                            },
+
+                            cache:
+                                'no-store',
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        'Gagal mengambil data notice. HTTP '
+                        +
+                        response.status
+                    );
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Support response array / {data:[]} / {notices:[]}
+                |--------------------------------------------------------------------------
+                */
+
+                let rawData = [];
+
+
+                if (
+                    Array.isArray(
+                        result
+                    )
+                ) {
+
+                    rawData =
+                        result;
+
+                } else if (
+                    result &&
+                    Array.isArray(
+                        result.data
+                    )
+                ) {
+
+                    rawData =
+                        result.data;
+
+                } else if (
+                    result &&
+                    Array.isArray(
+                        result.notices
+                    )
+                ) {
+
+                    rawData =
+                        result.notices;
+
+                }
+
+
+                const semuaBaris =
+                    pecahSearchNotice(
+                        rawData
+                    );
+
+
+                const lokasiCari =
+                    lokasi.toLowerCase();
+
+
+                const hasil =
+                    semuaBaris.filter(
+                        function (item) {
+
+                            const cocokTanggal =
+                                !tanggal
+                                ||
+                                normalisasiSearchTanggal(
+                                    item.tanggal
+                                )
+                                ===
+                                tanggal;
+
+
+                            const cocokLokasi =
+                                !lokasi
+                                ||
+                                String(
+                                    item.lokasi
+                                    ||
+                                    ''
+                                )
+                                .trim()
+                                .toLowerCase()
+                                ===
+                                lokasiCari;
+
+
+                            return (
+                                cocokTanggal
+                                &&
+                                cocokLokasi
+                            );
+
+                        }
+                    );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Urutkan tanggal -> id -> pagi/sore
+                |--------------------------------------------------------------------------
+                */
+
+                hasil.sort(
+                    function (a,b) {
+
+                        const tanggalA =
+                            normalisasiSearchTanggal(
+                                a.tanggal
+                            );
+
+
+                        const tanggalB =
+                            normalisasiSearchTanggal(
+                                b.tanggal
+                            );
+
+
+                        if (
+                            tanggalA !== tanggalB
+                        ) {
+
+                            return tanggalA.localeCompare(
+                                tanggalB
+                            );
+
+                        }
+
+
+                        const idA =
+                            Number(
+                                String(
+                                    a.id
+                                    ||
+                                    ''
+                                )
+                                .match(/^\d+/)?.[0]
+                                ||
+                                0
+                            );
+
+
+                        const idB =
+                            Number(
+                                String(
+                                    b.id
+                                    ||
+                                    ''
+                                )
+                                .match(/^\d+/)?.[0]
+                                ||
+                                0
+                            );
+
+
+                        if (
+                            idA !== idB
+                        ) {
+
+                            return idA - idB;
+
+                        }
+
+
+                        return (
+                            String(a.shift)
+                                .toLowerCase()
+                            ===
+                            'pagi'
+                                ? -1
+                                : 1
+                        );
+
+                    }
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Loading minimal 300 ms supaya terlihat
+                |--------------------------------------------------------------------------
+                */
+
+                const elapsed =
+                    Date.now()
+                    -
+                    mulai;
+
+
+                if (
+                    elapsed < 300
+                ) {
+
+                    await new Promise(
+                        function (resolve) {
+
+                            setTimeout(
+                                resolve,
+                                300 - elapsed
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                bukaSearchDaftarArsip();
+
+
+                renderSearchResult(
+                    hasil
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    'Pencarian daftar arsip:',
+                    error
+                );
+
+
+                hasilArsip.innerHTML = `
+
+                    <div class="hasil-placeholder">
+
+                        <div class="placeholder-ring">
+
+                            <div class="placeholder-icon">
+
+                                <i class="bi bi-exclamation-triangle"></i>
+
+                            </div>
+
+                        </div>
+
+                        <span class="placeholder-eyebrow">
+                            PENCARIAN GAGAL
+                        </span>
+
+                        <h3>
+                            Data Tidak Dapat Dimuat
+                        </h3>
+
+                        <p>
+                            Periksa route API notice atau koneksi database,
+                            kemudian coba kembali.
+                        </p>
+
+                    </div>
+
+                `;
+
+            } finally {
+
+                stopSearchLoading();
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUTTON CARI
+        |--------------------------------------------------------------------------
+        */
+
+        searchButton.addEventListener(
+            'click',
+            function (event) {
+
+                event.preventDefault();
+
+
+                cariDaftarArsip();
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ENTER
+        |--------------------------------------------------------------------------
+        */
+
+        [
+            tanggalInput,
+            lokasiInput
+        ]
+        .forEach(
+            function (element) {
+
+                element.addEventListener(
+                    'keydown',
+                    function (event) {
+
+                        if (
+                            event.key
+                            ===
+                            'Enter'
+                        ) {
+
+                            event.preventDefault();
+
+
+                            cariDaftarArsip();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESET
+        |--------------------------------------------------------------------------
+        |
+        | Mengembalikan tampilan awal.
+        | Tidak menghapus / mengubah data database.
+        |--------------------------------------------------------------------------
+        */
+
+        resetButton.addEventListener(
+            'click',
+            function () {
+
+                tanggalInput.value =
+                    '';
+
+
+                lokasiInput.value =
+                    '';
+
+
+                hasilArsip.innerHTML =
+                    initialHasilHtml;
+
+
+                bukaSearchDaftarArsip();
+
+            }
+        );
+
+    }
+);
+
+</script>
 
 
 {{-- =====================================================
