@@ -117,27 +117,6 @@
         </li>
 
 
-        <!-- MANAJEMEN USER -->
-        @if(auth()->check() && auth()->user()->role === 'admin')
-
-        <li>
-
-            <a
-                href="{{ route('users.index') }}"
-                class="{{ request()->routeIs('users.*') ? 'active' : '' }}"
-            >
-
-                <i class="bi bi-people-fill"></i>
-
-                <span>Manajemen User</span>
-
-            </a>
-
-        </li>
-
-        @endif
-
-
         <!-- PENGATURAN -->
         <li>
 
@@ -231,7 +210,7 @@
 
 
 /* =========================================================
-   KOTAK BIRU LOGO
+   KOTAK LOGO
 ========================================================= */
 
 .sidebar-brand-icon {
@@ -346,13 +325,9 @@
 .menu-title {
 
     padding:
-
         24px
-
         20px
-
         12px
-
         30px;
 
     color: #94a3b8;
@@ -466,9 +441,7 @@
     background: #2563eb;
 
     box-shadow:
-
         0 10px 25px
-
         rgba(37, 99, 235, .28);
 
 }
@@ -487,9 +460,7 @@
     padding: 18px 20px;
 
     border-top:
-
         1px solid
-
         rgba(255,255,255,.08);
 
     display: flex;
@@ -597,6 +568,7 @@
         transition: transform .25s ease;
 
     }
+
 
     .sidebar.show {
 
