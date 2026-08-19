@@ -1,0 +1,339 @@
+/* ======================================================
+   NOTICE PAGE
+====================================================== */
+
+.notice-page{
+    padding:20px;
+}
+
+/* HEADER */
+
+.page-header{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.05);
+
+    margin-bottom:25px;
+
+}
+
+.page-header h2{
+
+    font-weight:700;
+
+    color:#0F172A;
+
+}
+
+.page-header p{
+
+    color:#64748B;
+
+    margin-bottom:0;
+
+}
+
+/* CARD */
+
+.card{
+
+    border:none !important;
+
+    border-radius:20px !important;
+
+    overflow:hidden;
+
+    transition:.3s;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 18px 45px rgba(0,0,0,.10);
+
+}
+
+.card-header{
+
+    border:none;
+
+    padding:18px 22px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+.card-body{
+
+    padding:25px;
+
+}
+
+/* FORM */
+
+label{
+
+    font-weight:600;
+
+    color:#334155;
+
+    margin-bottom:8px;
+
+}
+
+.form-control{
+
+    height:48px;
+
+    border-radius:12px;
+
+    border:1px solid #E2E8F0;
+
+    transition:.3s;
+
+}
+
+.form-control:focus{
+
+    border-color:#2563EB;
+
+    box-shadow:0 0 0 .20rem rgba(37,99,235,.18);
+
+}
+
+.form-select{
+
+    height:48px;
+
+    border-radius:12px;
+
+}
+
+textarea.form-control{
+
+    height:auto;
+
+    resize:none;
+
+}
+
+/* BUTTON */
+
+.btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-primary{
+
+    background:#2563EB;
+
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:#1D4ED8;
+
+    transform:translateY(-2px);
+
+}
+
+.btn-warning{
+
+    color:white;
+
+}
+
+.btn-warning:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btn-outline-secondary:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* SUMMARY */
+
+.sticky-top{
+
+    top:95px;
+
+}
+
+.progress{
+
+    height:12px;
+
+    border-radius:20px;
+
+    background:#E2E8F0;
+
+}
+
+.progress-bar{
+
+    border-radius:20px;
+
+    font-weight:600;
+
+}
+
+/* ICON */
+
+.card-header i{
+
+    margin-right:8px;
+
+}
+
+/* PAGI */
+
+.bg-primary{
+
+    background:#2563EB !important;
+
+}
+
+/* SORE */
+
+.bg-dark{
+
+    background:#0F172A !important;
+
+}
+
+/* SUMMARY */
+
+.bg-success{
+
+    background:#10B981 !important;
+
+}
+
+/* NUMBER */
+
+#totalNotice{
+
+    font-size:38px;
+
+    font-weight:700;
+
+    color:#2563EB;
+
+}
+
+/* INPUT SHADOW */
+
+.form-control:hover,
+
+.form-select:hover{
+
+    border-color:#2563EB;
+
+}
+
+/* PAGE */
+
+body{
+
+    background:#F8FAFC;
+
+}
+
+/* ANIMATION */
+
+.card{
+
+    animation:fade .4s ease;
+
+}
+
+@keyframes fade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .sticky-top{
+
+        position:relative !important;
+
+        top:0;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .page-header{
+
+        text-align:center;
+
+    }
+
+    .page-header .btn{
+
+        margin-top:10px;
+
+        width:100%;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .card-body{
+
+        padding:18px;
+
+    }
+
+    .card-header{
+
+        text-align:center;
+
+    }
+
+}
