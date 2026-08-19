@@ -271,142 +271,6 @@
 
 
     {{-- =====================================================
-        FILTER SEARCH
-    ====================================================== --}}
-
-    <div class="arsip-filter-card">
-
-        <div class="arsip-filter-header">
-
-            <div class="arsip-filter-title">
-
-                <div class="filter-title-icon">
-                    <i class="bi bi-funnel-fill"></i>
-                </div>
-
-
-                <div>
-
-                    <span>
-                        FILTER ARSIP
-                    </span>
-
-                    <h2>
-                        Cari Data Arsip
-                    </h2>
-
-                    <p>
-                        Pilih tanggal dan lokasi yang ingin ditampilkan.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="filter-status-badge">
-
-                <i class="bi bi-database-check"></i>
-
-                Database Aktif
-
-            </div>
-
-        </div>
-
-
-        <div class="arsip-filter-grid">
-
-            {{-- TANGGAL --}}
-
-            <div class="arsip-field">
-
-                <label for="filterTanggal">
-
-                    <i class="bi bi-calendar3"></i>
-
-                    Tanggal Arsip
-
-                </label>
-
-
-                <div class="arsip-control">
-
-                    <span>
-                        <i class="bi bi-calendar-event"></i>
-                    </span>
-
-                    <input
-                        type="date"
-                        id="filterTanggal">
-
-                </div>
-
-            </div>
-
-
-            {{-- LOKASI --}}
-
-            <div class="arsip-field">
-
-                <label for="filterLokasi">
-
-                    <i class="bi bi-geo-alt"></i>
-
-                    Lokasi
-
-                </label>
-
-
-                <div class="arsip-control">
-
-                    <span>
-                        <i class="bi bi-pin-map"></i>
-                    </span>
-
-
-                    <select id="filterLokasi">
-
-                        <option value="">
-                            -- Pilih Lokasi --
-                        </option>
-
-                        <option value="Sampling 1">Sampling 1</option>
-                        <option value="Sampling 2">Sampling 2</option>
-                        <option value="Sampling 3">Sampling 3</option>
-                        <option value="Sampling 4">Sampling 4</option>
-                        <option value="Sampling 5">Sampling 5</option>
-                        <option value="Sampling 6">Sampling 6</option>
-                        <option value="Delivery">Delivery</option>
-                        <option value="Induk">Induk</option>
-                        <option value="DT Gunungsari">DT Gunungsari</option>
-                        <option value="DT Narmada">DT Narmada</option>
-                        <option value="DT Kediri">DT Kediri</option>
-                        <option value="MPP">MPP</option>
-                        <option value="Samtor">Samtor</option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="arsip-filter-button">
-                <button type="button" id="btnCariArsip" class="arsip-search-button" onclick="tampilkanArsip()">
-                    <span class="search-button-icon"><i class="bi bi-search"></i></span>
-                    <span id="btnCariArsipText">Cari Arsip</span>
-                </button>
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    {{-- =====================================================
         SEMUA DAFTAR ARSIP / KATEGORI MINGGUAN
     ====================================================== --}}
 
@@ -4012,765 +3876,598 @@ function escapeArsip(value)
 
 
 {{-- =====================================================
-    PENCARIAN ARSIP DENGAN TOMBOL - FINAL FIX
+    FIX AKSI EDIT + HAPUS
+    - Normalisasi ID seperti 3_1 menjadi ID database 3
+    - Tambahkan tombol hapus di sebelah kanan tombol edit
 ====================================================== --}}
 
 <style>
-/* =====================================================
-   SEARCH BUTTON
-===================================================== */
 
-.arsip-filter-grid {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) minmax(0,1fr) auto;
-    gap: 14px;
-    align-items: end;
+.arsip-dynamic-actions,
+td.arsip-action-cell {
+    white-space: nowrap;
 }
 
-.arsip-filter-button {
-    display: flex;
-    align-items: end;
-}
-
-.arsip-search-button {
-    min-width: 155px;
-    min-height: 45px;
-    padding: 0 18px;
-    border: 0;
-    border-radius: 10px;
-    background: #2563eb;
-    color: #fff;
+.arsip-delete-btn {
+    width: 31px;
+    height: 31px;
+    margin-left: 5px;
+    padding: 0;
+    border: 1px solid #fecaca;
+    border-radius: 7px;
+    background: #fff;
+    color: #dc2626;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 700;
+    vertical-align: middle;
     cursor: pointer;
-    box-shadow: 0 7px 18px rgba(37,99,235,.18);
-    transition: .2s ease;
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
-.arsip-search-button:hover {
-    background: #1d4ed8;
+.arsip-delete-btn:hover {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
     transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(220,38,38,.18);
 }
 
-.arsip-search-button:disabled {
-    opacity: .72;
+.arsip-delete-btn:disabled {
+    opacity: .65;
     cursor: wait;
     transform: none;
 }
 
-.search-button-icon {
-    width: 21px;
-    height: 21px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.arsip-delete-btn.is-loading i {
+    animation: arsipDeleteSpin .7s linear infinite;
 }
 
-.arsip-search-button.is-loading .search-button-icon {
-    animation: arsipSearchSpin .8s linear infinite;
-}
-
-@keyframes arsipSearchSpin {
-    to { transform: rotate(360deg); }
-}
-
-.arsip-search-loading {
-    min-height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    text-align: center;
-}
-
-.arsip-search-loading-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.arsip-search-loader {
-    width: 38px;
-    height: 38px;
-    border: 4px solid #dbeafe;
-    border-top-color: #2563eb;
-    border-radius: 50%;
-    animation: arsipSearchSpin .7s linear infinite;
-}
-
-.arsip-search-loading h3 {
-    margin: 4px 0 0;
-    color: #0f172a;
-    font-size: 14px;
-}
-
-.arsip-search-loading p {
-    margin: 0;
-    color: #94a3b8;
-    font-size: 10px;
-}
-
-.search-result-top {
-    padding: 15px 17px;
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.search-result-top span {
-    color: #2563eb;
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: .8px;
-}
-
-.search-result-top h3 {
-    margin: 3px 0 0;
-    color: #0f172a;
-    font-size: 15px;
-    font-weight: 750;
-}
-
-.search-result-total {
-    padding: 7px 10px;
-    border-radius: 8px;
-    background: #eff6ff;
-    color: #2563eb;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-@media(max-width: 850px) {
-    .arsip-filter-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .arsip-filter-button {
-        grid-column: 1 / -1;
-    }
-
-    .arsip-search-button {
-        width: 100%;
+@keyframes arsipDeleteSpin {
+    to {
+        transform: rotate(360deg);
     }
 }
 
-@media(max-width: 600px) {
-    .arsip-filter-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .arsip-filter-button {
-        grid-column: auto;
-    }
-}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    const tanggalEl = document.getElementById('filterTanggal');
-    const lokasiEl  = document.getElementById('filterLokasi');
-    const hasilEl   = document.getElementById('hasilArsip');
-    const buttonEl  = document.getElementById('btnCariArsip');
-    const textEl    = document.getElementById('btnCariArsipText');
+    const hasilArsip =
+        document.getElementById('hasilArsip');
 
-    if (!buttonEl) {
-        console.error('Tombol #btnCariArsip tidak ditemukan.');
-        return;
-    }
+    const csrfToken =
+        @json(csrf_token());
+
 
     /*
     |--------------------------------------------------------------------------
-    | URL API DATABASE
+    | AMBIL ID DATABASE ASLI
     |--------------------------------------------------------------------------
+    |
+    | Contoh:
+    | 3      -> 3
+    | 3_1    -> 3
+    | 3_pagi -> 3
+    |
     */
-    const apiUrl = @json(route('api.notices'));
+
+    function ambilNoticeId(value)
+    {
+        const text =
+            String(value || '').trim();
+
+
+        const match =
+            text.match(/^(\d+)/);
+
+
+        return match
+            ? match[1]
+            : '';
+    }
+
 
     /*
     |--------------------------------------------------------------------------
-    | HELPER
+    | AMBIL ID DARI URL EDIT
     |--------------------------------------------------------------------------
     */
 
-    function escapeHtml(value) {
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    function angka(value) {
-        return Number(value || 0).toLocaleString('id-ID');
-    }
-
-    function normalisasiTanggal(value) {
-        if (!value) return '';
-
-        const raw = String(value).trim();
-
-        let m = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (m) return `${m[1]}-${m[2]}-${m[3]}`;
-
-        m = raw.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})/);
-        if (m) return `${m[3]}-${m[2]}-${m[1]}`;
-
-        return raw;
-    }
-
-    function formatTanggal(value) {
-        const t = normalisasiTanggal(value);
-        const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-
-        return m
-            ? `${m[3]}-${m[2]}-${m[1]}`
-            : (value || '-');
-    }
-
-    function statusClass(status) {
-        const s = String(status || '').toLowerCase();
-
-        if (s === 'sesuai' || s === 'selesai') {
-            return 'sesuai';
+    function ambilIdDariHref(href)
+    {
+        if (!href) {
+            return '';
         }
 
-        if (s === 'pending') {
-            return 'pending';
-        }
-
-        return 'rusak';
-    }
-
-    function formatNomorSeri(value) {
-        if (!value) return '-';
-
-        const raw = String(value);
-        const digit = raw.replace(/\D/g, '');
-
-        if (digit.length >= 10) {
-            return digit.slice(0, 2) + '-' + digit.slice(2);
-        }
-
-        return raw;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | UBAH RECORD NOTICE DATABASE MENJADI BARIS PAGI / SORE
-    |--------------------------------------------------------------------------
-    */
-
-    function pecahNotice(rawData) {
-
-        const rows = [];
-
-        rawData.forEach(function (item) {
-
-            /*
-            | Jika API ternyata sudah mengembalikan data per-shift.
-            */
-            if (item.shift !== undefined) {
-
-                rows.push({
-                    id: item.id,
-                    tanggal: item.tanggal ?? item.tanggal_notice ?? '',
-                    lokasi: item.lokasi ?? '',
-                    shift: item.shift ?? '-',
-                    petugas: item.petugas ?? '-',
-                    awal: item.awal ?? item.nomor_seri_awal ?? '-',
-                    akhir: item.akhir ?? item.nomor_seri_akhir ?? '-',
-                    jumlah: Number(item.jumlah || 0),
-                    status: item.status ?? '-',
-                    keterangan: item.keterangan ?? '-'
-                });
-
-                return;
-            }
-
-            const adaPagi =
-                item.petugas_pagi ||
-                item.awal_pagi ||
-                item.akhir_pagi ||
-                Number(item.jumlah_pagi || 0) > 0;
-
-            const adaSore =
-                item.petugas_sore ||
-                item.awal_sore ||
-                item.akhir_sore ||
-                Number(item.jumlah_sore || 0) > 0;
-
-            if (adaPagi) {
-                rows.push({
-                    id: item.id,
-                    tanggal: item.tanggal ?? item.tanggal_notice ?? '',
-                    lokasi: item.lokasi ?? '',
-                    shift: 'Pagi',
-                    petugas: item.petugas_pagi ?? '-',
-                    awal: item.awal_pagi ?? '-',
-                    akhir: item.akhir_pagi ?? '-',
-                    jumlah: Number(item.jumlah_pagi || 0),
-                    status: item.status_pagi ?? '-',
-                    keterangan: item.keterangan_pagi ?? '-'
-                });
-            }
-
-            if (adaSore) {
-                rows.push({
-                    id: item.id,
-                    tanggal: item.tanggal ?? item.tanggal_notice ?? '',
-                    lokasi: item.lokasi ?? '',
-                    shift: 'Sore',
-                    petugas: item.petugas_sore ?? '-',
-                    awal: item.awal_sore ?? '-',
-                    akhir: item.akhir_sore ?? '-',
-                    jumlah: Number(item.jumlah_sore || 0),
-                    status: item.status_sore ?? '-',
-                    keterangan: item.keterangan_sore ?? '-'
-                });
-            }
-        });
-
-        return rows;
-    }
-
-    function bukaDaftarArsip() {
-
-        const content = document.getElementById('daftarArsipContent');
-        const toggle  = document.getElementById('toggleDaftarArsipBtn');
-        const icon    = document.getElementById('toggleDaftarArsipIcon');
-        const text    = document.getElementById('toggleDaftarArsipText');
-
-        if (content) {
-            content.classList.remove('is-closed');
-            content.classList.add('is-open');
-        }
-
-        if (toggle) {
-            toggle.classList.remove('is-closed');
-            toggle.setAttribute('aria-expanded', 'true');
-        }
-
-        if (icon) {
-            icon.className = 'bi bi-chevron-up';
-        }
-
-        if (text) {
-            text.textContent = 'Tutup Daftar Arsip';
-        }
-    }
-
-    function tampilLoading() {
-
-        bukaDaftarArsip();
-
-        buttonEl.disabled = true;
-        buttonEl.classList.add('is-loading');
-
-        const icon = buttonEl.querySelector('.search-button-icon');
-
-        if (icon) {
-            icon.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
-        }
-
-        if (textEl) {
-            textEl.textContent = 'Mencari...';
-        }
-
-        if (hasilEl) {
-            hasilEl.innerHTML = `
-                <div class="arsip-search-loading">
-                    <div class="arsip-search-loading-box">
-                        <div class="arsip-search-loader"></div>
-                        <h3>Mencari Data Arsip</h3>
-                        <p>Data sedang dicocokkan dengan database...</p>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    function selesaiLoading() {
-
-        buttonEl.disabled = false;
-        buttonEl.classList.remove('is-loading');
-
-        const icon = buttonEl.querySelector('.search-button-icon');
-
-        if (icon) {
-            icon.innerHTML = '<i class="bi bi-search"></i>';
-        }
-
-        if (textEl) {
-            textEl.textContent = 'Cari Arsip';
-        }
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | FUNGSI PENCARIAN
-    |--------------------------------------------------------------------------
-    */
-
-    async function cariArsip() {
-
-        const tanggal = tanggalEl ? tanggalEl.value : '';
-        const lokasi  = lokasiEl ? lokasiEl.value.trim() : '';
-
-        if (!tanggal && !lokasi) {
-
-            alert('Pilih tanggal atau lokasi terlebih dahulu.');
-
-            if (tanggalEl) {
-                tanggalEl.focus();
-            }
-
-            return;
-        }
-
-        tampilLoading();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Beri browser kesempatan menampilkan loading sebelum fetch.
-        |--------------------------------------------------------------------------
-        */
-
-        await new Promise(function (resolve) {
-            requestAnimationFrame(function () {
-                requestAnimationFrame(resolve);
-            });
-        });
-
-        /*
-        |--------------------------------------------------------------------------
-        | Minimal loading agar perubahan benar-benar terlihat.
-        |--------------------------------------------------------------------------
-        */
-
-        const mulai = Date.now();
 
         try {
 
-            const response = await fetch(apiUrl, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                cache: 'no-store'
-            });
-
-            if (!response.ok) {
-                throw new Error(
-                    'HTTP ' + response.status + ' ' + response.statusText
+            const url =
+                new URL(
+                    href,
+                    window.location.origin
                 );
+
+
+            const match =
+                url.pathname.match(
+                    /\/notice\/([^\/]+)\/edit\/?$/
+                );
+
+
+            if (!match) {
+                return '';
             }
 
-            const json = await response.json();
 
-            let rawData = [];
-
-            if (Array.isArray(json)) {
-                rawData = json;
-            } else if (json && Array.isArray(json.data)) {
-                rawData = json.data;
-            } else if (json && Array.isArray(json.notices)) {
-                rawData = json.notices;
-            }
-
-            const rows = pecahNotice(rawData);
-
-            const lokasiCari = lokasi.toLowerCase();
-
-            const filtered = rows
-                .filter(function (item) {
-
-                    const cocokTanggal =
-                        !tanggal ||
-                        normalisasiTanggal(item.tanggal) === tanggal;
-
-                    const cocokLokasi =
-                        !lokasi ||
-                        String(item.lokasi || '')
-                            .trim()
-                            .toLowerCase() === lokasiCari;
-
-                    return cocokTanggal && cocokLokasi;
-                })
-                .sort(function (a, b) {
-
-                    const ta = normalisasiTanggal(a.tanggal);
-                    const tb = normalisasiTanggal(b.tanggal);
-
-                    if (ta !== tb) {
-                        return ta.localeCompare(tb);
-                    }
-
-                    if (Number(a.id || 0) !== Number(b.id || 0)) {
-                        return Number(a.id || 0) - Number(b.id || 0);
-                    }
-
-                    return a.shift === 'Pagi' ? -1 : 1;
-                });
-
-            /*
-            |--------------------------------------------------------------------------
-            | Pastikan loading terlihat sekurangnya 450ms.
-            |--------------------------------------------------------------------------
-            */
-
-            const elapsed = Date.now() - mulai;
-
-            if (elapsed < 450) {
-                await new Promise(function (resolve) {
-                    setTimeout(resolve, 450 - elapsed);
-                });
-            }
-
-            bukaDaftarArsip();
-
-            if (!filtered.length) {
-
-                hasilEl.innerHTML = `
-                    <div class="hasil-placeholder">
-                        <div class="placeholder-ring">
-                            <div class="placeholder-icon">
-                                <i class="bi bi-search"></i>
-                            </div>
-                        </div>
-
-                        <span class="placeholder-eyebrow">
-                            HASIL PENCARIAN
-                        </span>
-
-                        <h3>Data Tidak Ditemukan</h3>
-
-                        <p>
-                            Tidak ada data yang sesuai dengan filter
-                            tanggal atau lokasi yang dipilih.
-                        </p>
-                    </div>
-                `;
-
-                return;
-            }
-
-            let totalNotice = 0;
-            let body = '';
-
-            filtered.forEach(function (item, index) {
-
-                totalNotice += Number(item.jumlah || 0);
-
-                const cls = statusClass(item.status);
-
-                body += `
-                    <tr>
-                        <td>${index + 1}</td>
-
-                        <td>
-                            ${escapeHtml(formatTanggal(item.tanggal))}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(item.lokasi || '-')}
-                        </td>
-
-                        <td>
-                            <span class="rangkuman-shift">
-                                ${escapeHtml(item.shift || '-')}
-                            </span>
-                        </td>
-
-                        <td>
-                            ${escapeHtml(item.petugas || '-')}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(formatNomorSeri(item.awal))}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(formatNomorSeri(item.akhir))}
-                        </td>
-
-                        <td style="font-weight:700;text-align:center;">
-                            ${angka(item.jumlah)}
-                        </td>
-
-                        <td>
-                            <span class="rangkuman-status ${cls}">
-                                ${escapeHtml(item.status || '-')}
-                            </span>
-                        </td>
-
-                        <td>
-                            ${escapeHtml(item.keterangan || '-')}
-                        </td>
-
-                        <td>
-                            <a
-                                href="{{ url('/notice') }}/${item.id}/edit"
-                                class="btn btn-sm btn-outline-primary"
-                                title="Edit Notice">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            hasilEl.innerHTML = `
-                <div class="search-result-top">
-
-                    <div>
-                        <span>HASIL PENCARIAN</span>
-
-                        <h3>
-                            ${filtered.length} Arsip Ditemukan
-                        </h3>
-                    </div>
-
-                    <div class="search-result-total">
-                        Total Notice: ${angka(totalNotice)}
-                    </div>
-
-                </div>
-
-                <div
-                    class="rangkuman-table-wrapper"
-                    style="border:0;border-radius:0;">
-
-                    <table class="rangkuman-table">
-
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Tanggal</th>
-                                <th>Lokasi</th>
-                                <th>Shift</th>
-                                <th>Petugas</th>
-                                <th>No. Seri Awal</th>
-                                <th>No. Seri Akhir</th>
-                                <th>Jumlah</th>
-                                <th>Status</th>
-                                <th>Keterangan</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            ${body}
-                        </tbody>
-
-                    </table>
-
-                </div>
-            `;
-
-            hasilEl.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            return ambilNoticeId(
+                match[1]
+            );
 
         } catch (error) {
 
-            console.error('Pencarian arsip error:', error);
-
-            if (hasilEl) {
-
-                hasilEl.innerHTML = `
-                    <div class="hasil-placeholder">
-
-                        <div class="placeholder-ring">
-                            <div class="placeholder-icon">
-                                <i class="bi bi-exclamation-triangle"></i>
-                            </div>
-                        </div>
-
-                        <span class="placeholder-eyebrow">
-                            GAGAL MENGAMBIL DATA
-                        </span>
-
-                        <h3>Pencarian Tidak Dapat Diproses</h3>
-
-                        <p>
-                            API notice tidak memberikan data yang dapat dibaca.
-                            Periksa route api.notices atau method apiIndex().
-                        </p>
-
-                    </div>
-                `;
-            }
-
-        } finally {
-
-            selesaiLoading();
+            return '';
 
         }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | CLICK BUTTON - TIDAK BERGANTUNG PADA INLINE ONCLICK
-    |--------------------------------------------------------------------------
-    */
-
-    buttonEl.removeAttribute('onclick');
-
-    buttonEl.addEventListener('click', function (event) {
-
-        event.preventDefault();
-
-        cariArsip();
-
-    });
 
     /*
     |--------------------------------------------------------------------------
-    | ENTER
+    | PERBAIKI LINK EDIT
     |--------------------------------------------------------------------------
     */
 
-    [tanggalEl, lokasiEl].forEach(function (element) {
+    function perbaikiLinkEdit(link)
+    {
+        if (!link) {
+            return '';
+        }
 
-        if (!element) {
+
+        const noticeId =
+            ambilIdDariHref(
+                link.getAttribute('href')
+            );
+
+
+        if (!noticeId) {
+            return '';
+        }
+
+
+        link.setAttribute(
+            'href',
+            '{{ url('/notice') }}/'
+            + noticeId
+            + '/edit'
+        );
+
+
+        link.dataset.noticeId =
+            noticeId;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Rapikan tombol edit kalau belum punya title
+        |--------------------------------------------------------------------------
+        */
+
+        if (!link.getAttribute('title')) {
+
+            link.setAttribute(
+                'title',
+                'Edit Notice'
+            );
+
+        }
+
+
+        return noticeId;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMBAHKAN TOMBOL HAPUS
+    |--------------------------------------------------------------------------
+    */
+
+    function tambahTombolHapus(link, noticeId)
+    {
+        if (
+            !link ||
+            !noticeId
+        ) {
             return;
         }
 
-        element.addEventListener('keydown', function (event) {
 
-            if (event.key === 'Enter') {
+        const parent =
+            link.parentElement;
 
-                event.preventDefault();
 
-                cariArsip();
+        if (!parent) {
+            return;
+        }
 
-            }
 
-        });
+        /*
+        |--------------------------------------------------------------------------
+        | Jangan buat tombol dua kali
+        |--------------------------------------------------------------------------
+        */
 
-    });
+        const tombolLama =
+            parent.querySelector(
+                '.arsip-delete-btn[data-notice-id="'
+                + noticeId
+                + '"]'
+            );
+
+
+        if (tombolLama) {
+            return;
+        }
+
+
+        parent.classList.add(
+            'arsip-dynamic-actions'
+        );
+
+
+        const tombol =
+            document.createElement(
+                'button'
+            );
+
+
+        tombol.type =
+            'button';
+
+
+        tombol.className =
+            'arsip-delete-btn';
+
+
+        tombol.dataset.noticeId =
+            noticeId;
+
+
+        tombol.title =
+            'Hapus Notice';
+
+
+        tombol.setAttribute(
+            'aria-label',
+            'Hapus Notice'
+        );
+
+
+        tombol.innerHTML =
+            '<i class="bi bi-trash3"></i>';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tempatkan tepat di sebelah kanan tombol Edit
+        |--------------------------------------------------------------------------
+        */
+
+        if (link.nextSibling) {
+
+            parent.insertBefore(
+                tombol,
+                link.nextSibling
+            );
+
+        } else {
+
+            parent.appendChild(
+                tombol
+            );
+
+        }
+
+    }
+
 
     /*
     |--------------------------------------------------------------------------
-    | GLOBAL FALLBACK
+    | PROSES SEMUA LINK EDIT YANG ADA
     |--------------------------------------------------------------------------
     */
 
-    window.tampilkanArsip = cariArsip;
+    function prosesAksi(container)
+    {
+        if (!container) {
+            return;
+        }
+
+
+        const links =
+            container.querySelectorAll(
+                'a[href*="/notice/"][href*="/edit"]'
+            );
+
+
+        links.forEach(
+            function (link) {
+
+                const noticeId =
+                    perbaikiLinkEdit(
+                        link
+                    );
+
+
+                if (!noticeId) {
+                    return;
+                }
+
+
+                tambahTombolHapus(
+                    link,
+                    noticeId
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS NOTICE
+    |--------------------------------------------------------------------------
+    */
+
+    async function hapusNotice(button)
+    {
+        const noticeId =
+            ambilNoticeId(
+                button.dataset.noticeId
+            );
+
+
+        if (!noticeId) {
+
+            alert(
+                'ID notice tidak valid.'
+            );
+
+            return;
+
+        }
+
+
+        const yakin =
+            window.confirm(
+                'Yakin ingin menghapus data notice ini?\n\n'
+                + 'Data yang sudah dihapus tidak dapat dikembalikan.'
+            );
+
+
+        if (!yakin) {
+            return;
+        }
+
+
+        button.disabled =
+            true;
+
+
+        button.classList.add(
+            'is-loading'
+        );
+
+
+        button.innerHTML =
+            '<i class="bi bi-arrow-repeat"></i>';
+
+
+        try {
+
+            const response =
+                await fetch(
+                    '{{ url('/notice') }}/'
+                    + noticeId,
+                    {
+                        method:
+                            'DELETE',
+
+                        headers: {
+
+                            'Accept':
+                                'application/json',
+
+                            'X-Requested-With':
+                                'XMLHttpRequest',
+
+                            'X-CSRF-TOKEN':
+                                csrfToken,
+
+                        },
+
+                    }
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Laravel bisa mengembalikan JSON atau redirect HTML.
+            | Keduanya dianggap berhasil jika status HTTP 2xx.
+            |--------------------------------------------------------------------------
+            */
+
+            if (!response.ok) {
+
+                let message =
+                    'Gagal menghapus data notice.';
+
+
+                try {
+
+                    const result =
+                        await response.json();
+
+
+                    if (result.message) {
+
+                        message =
+                            result.message;
+
+                    }
+
+                } catch (error) {
+
+                    /*
+                    | Biarkan menggunakan pesan default.
+                    */
+
+                }
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Refresh agar statistik, arsip mingguan dan bulanan ikut diperbarui.
+            |--------------------------------------------------------------------------
+            */
+
+            window.location.reload();
+
+        } catch (error) {
+
+            console.error(
+                'Hapus notice error:',
+                error
+            );
+
+
+            alert(
+                error.message
+                ||
+                'Gagal menghapus data notice.'
+            );
+
+
+            button.disabled =
+                false;
+
+
+            button.classList.remove(
+                'is-loading'
+            );
+
+
+            button.innerHTML =
+                '<i class="bi bi-trash3"></i>';
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVENT DELEGATION TOMBOL HAPUS
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    '.arsip-delete-btn'
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            hapusNotice(
+                button
+            );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROSES DATA YANG SUDAH ADA
+    |--------------------------------------------------------------------------
+    */
+
+    prosesAksi(
+        document
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBSERVER
+    |--------------------------------------------------------------------------
+    |
+    | Daftar arsip dibuat secara dinamis oleh JavaScript lain.
+    | Jadi setiap isi #hasilArsip berubah, link edit akan otomatis diperbaiki
+    | dan tombol hapus akan ditambahkan.
+    |--------------------------------------------------------------------------
+    */
+
+    if (hasilArsip) {
+
+        const observer =
+            new MutationObserver(
+                function () {
+
+                    prosesAksi(
+                        hasilArsip
+                    );
+
+                }
+            );
+
+
+        observer.observe(
+            hasilArsip,
+            {
+                childList:
+                    true,
+
+                subtree:
+                    true,
+
+            }
+        );
+
+    }
 
 });
 </script>
 
+
 @endsection
-        
