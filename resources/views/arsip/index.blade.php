@@ -393,6 +393,13 @@
 
 
 
+            <div class="arsip-filter-button">
+                <button type="button" id="btnCariArsip" class="arsip-search-button" onclick="tampilkanArsip()">
+                    <span class="search-button-icon"><i class="bi bi-search"></i></span>
+                    <span id="btnCariArsipText">Cari Arsip</span>
+                </button>
+            </div>
+
         </div>
 
     </div>
@@ -1975,7 +1982,7 @@
     display: grid;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        minmax(0, 1fr) minmax(0, 1fr) auto;
 
     gap: 14px;
 
@@ -2066,7 +2073,11 @@
 }
 
 
+.arsip-filter-button { display:flex; align-items:end; }
+
 .arsip-search-button {
+
+    min-width: 150px;
 
     min-height: 45px;
 
@@ -4001,32 +4012,40 @@ function escapeArsip(value)
 
 
 {{-- =====================================================
-    FILTER OTOMATIS TANPA TOMBOL TAMPILKAN ARSIP
+    PENCARIAN ARSIP DENGAN TOMBOL
 ====================================================== --}}
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const filterTanggal = document.getElementById('filterTanggal');
-    const filterLokasi = document.getElementById('filterLokasi');
-
-    function jalankanFilterArsip() {
-
-        if (typeof window.tampilkanArsip === 'function') {
-            window.tampilkanArsip();
-        }
-
-    }
-
-    if (filterTanggal) {
-        filterTanggal.addEventListener('change', jalankanFilterArsip);
-    }
-
-    if (filterLokasi) {
-        filterLokasi.addEventListener('change', jalankanFilterArsip);
-    }
-
-});
+window.tampilkanArsip = async function () {
+    const tanggalEl=document.getElementById('filterTanggal'), lokasiEl=document.getElementById('filterLokasi');
+    const hasil=document.getElementById('hasilArsip'), btn=document.getElementById('btnCariArsip'), btnText=document.getElementById('btnCariArsipText');
+    const tanggal=tanggalEl?.value||'', lokasi=(lokasiEl?.value||'').trim();
+    if(!tanggal){ alert('Silakan pilih tanggal arsip terlebih dahulu.'); tanggalEl?.focus(); return; }
+    const [tahun,bulan]=tanggal.split('-');
+    if(btn) btn.disabled=true; if(btnText) btnText.textContent='Mencari...';
+    hasil.innerHTML=`<div class="hasil-placeholder"><div class="placeholder-ring"><div class="placeholder-icon"><i class="bi bi-arrow-repeat"></i></div></div><span class="placeholder-eyebrow">PENCARIAN ARSIP</span><h3>Sedang Mencari Data</h3><p>Data sedang dicocokkan dengan database.</p></div>`;
+    try {
+        const response=await fetch(`/arsip/bulanan/${tahun}/${Number(bulan)}`,{headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest'}});
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result=await response.json(); if(!result.success) throw new Error('Data tidak tersedia');
+        const data=(Array.isArray(result.data)?result.data:[]).filter(item=>{
+            const t=normalisasiTanggalCari(item.tanggal??item.tanggal_notice??item.tanggal_format??'');
+            const l=String(item.lokasi??'').trim().toLowerCase();
+            return t===tanggal && (!lokasi || l===lokasi.toLowerCase());
+        });
+        bukaDaftarArsipCari();
+        if(!data.length){ hasil.innerHTML=`<div class="hasil-placeholder"><div class="placeholder-ring"><div class="placeholder-icon"><i class="bi bi-search"></i></div></div><span class="placeholder-eyebrow">HASIL PENCARIAN</span><h3>Data Tidak Ditemukan</h3><p>Tidak ada arsip yang sesuai dengan tanggal dan lokasi yang dipilih.</p></div>`; return; }
+        let total=0,rows='';
+        data.forEach((item,i)=>{ total+=Number(item.jumlah||0); const sc=getStatusClass(item.status); rows+=`<tr><td>${i+1}</td><td>${escCari(item.tanggal_format||formatTanggalCari(tanggal))}</td><td>${escCari(item.lokasi||'-')}</td><td><span class="rangkuman-shift">${escCari(item.shift||'-')}</span></td><td>${escCari(item.petugas||'-')}</td><td>${escCari(item.awal||item.nomor_seri_awal||'-')}</td><td>${escCari(item.akhir||item.nomor_seri_akhir||'-')}</td><td style="font-weight:700;text-align:center">${formatAngka(item.jumlah||0)}</td><td><span class="rangkuman-status ${sc}">${escCari(item.status||'-')}</span></td><td>${escCari(item.keterangan||'-')}</td></tr>`; });
+        hasil.innerHTML=`<div style="padding:16px 18px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><span style="color:#2563eb;font-size:9px;font-weight:800">HASIL PENCARIAN</span><h3 style="margin:3px 0 0;font-size:15px">${data.length} Arsip Ditemukan</h3></div><div style="padding:7px 10px;border-radius:8px;background:#eff6ff;color:#2563eb;font-size:10px;font-weight:700">Total Notice: ${formatAngka(total)}</div></div><div class="rangkuman-table-wrap" style="border:0;border-radius:0"><table class="rangkuman-table"><thead><tr><th>No</th><th>Tanggal</th><th>Lokasi</th><th>Shift</th><th>Petugas</th><th>No. Seri Awal</th><th>No. Seri Akhir</th><th>Jumlah</th><th>Status</th><th>Keterangan</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+        hasil.scrollIntoView({behavior:'smooth',block:'start'});
+    } catch(e){ console.error(e); hasil.innerHTML=`<div class="hasil-placeholder"><div class="placeholder-ring"><div class="placeholder-icon"><i class="bi bi-exclamation-triangle"></i></div></div><span class="placeholder-eyebrow">GAGAL MEMUAT DATA</span><h3>Pencarian Tidak Dapat Diproses</h3><p>Silakan coba kembali.</p></div>`; }
+    finally { if(btn) btn.disabled=false; if(btnText) btnText.textContent='Cari Arsip'; }
+};
+function normalisasiTanggalCari(v){ if(!v)return''; const x=String(v).trim(); let m=x.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m)return `${m[1]}-${m[2]}-${m[3]}`; m=x.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})/); return m?`${m[3]}-${m[2]}-${m[1]}`:x; }
+function formatTanggalCari(v){ const m=normalisasiTanggalCari(v).match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?`${m[3]}-${m[2]}-${m[1]}`:(v||'-'); }
+function escCari(v){ return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+function bukaDaftarArsipCari(){ const c=document.getElementById('daftarArsipContent'),b=document.getElementById('toggleDaftarArsipBtn'),i=document.getElementById('toggleDaftarArsipIcon'),t=document.getElementById('toggleDaftarArsipText'); c?.classList.remove('is-closed');c?.classList.add('is-open');b?.classList.remove('is-closed');b?.setAttribute('aria-expanded','true');if(i)i.className='bi bi-chevron-up';if(t)t.textContent='Tutup Daftar Arsip'; }
+document.addEventListener('DOMContentLoaded',()=>{[document.getElementById('filterTanggal'),document.getElementById('filterLokasi')].forEach(el=>el?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();window.tampilkanArsip();}}));});
 </script>
 
 @endsection
